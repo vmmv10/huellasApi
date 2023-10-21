@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id          Int          @id @default(autoincrement())
+  userId      String?      @map(name: "user_id")
+  instagram   String
+  tiktok      String
+  facebook    String
+  telefono    String
+  whatsapp    String
+  direccion   String
+  ciudad      String
+  nombre      String?
+  apellidos   String?
+  comentarios Comentario[]
+}
+
+model Comentario {
+  id          Int     @id @default(autoincrement())
+  descripcion String?
+  email       String?
+  autor       String?
+  usuario     Usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+  usuario_id  Int
+}
+
+model Expedicion {
+  id           Int           @id @default(autoincrement())
+  userId       String        @map(name: "user_id")
+  titulo       String
+  descripcion  String?
+  fecha        DateTime
+  precio       Int
+  ubicacion1   String
+  ubicacion2   String[]
+  detalles     Detalle[]
+  imagen_tabla ImagenTabla[]
+}
+
+model Imagen {
+  id           Int           @id @default(autoincrement())
+  url          String
+  nombre       String
+  uso          String
+  public_id    String
+  imagen_tabla ImagenTabla[]
+}
+
+model ImagenTabla {
+  id            Int        @id @default(autoincrement())
+  tabla         String
+  expedicion    Expedicion @relation(fields: [expedicion_id], references: [id], onDelete: Cascade)
+  imagen        Imagen     @relation(fields: [imagen_id], references: [id], onDelete: Cascade)
+  expedicion_id Int
+  imagen_id     Int
+}
+
+model Detalle {
+  id            Int        @id @default(autoincrement())
+  descripcion   String
+  titulo        String
+  orden         Int
+  expedicion    Expedicion @relation(fields: [expedicion_id], references: [id], onDelete: Cascade)
+  expedicion_id Int
+}
