@@ -11,18 +11,23 @@ datasource db {
 }
 
 model Usuario {
-  id          Int          @id @default(autoincrement())
-  userId      String?      @map(name: "user_id")
-  instagram   String
-  tiktok      String
-  facebook    String
-  telefono    String
-  whatsapp    String
-  direccion   String
-  ciudad      String
-  nombre      String?
-  apellidos   String?
-  comentarios Comentario[]
+  id            Int           @id @default(autoincrement())
+  password      String?
+  email         String        @unique
+  instagram     String?
+  tiktok        String?
+  facebook      String?
+  telefono      String?
+  whatsapp      String?
+  direccion     String?
+  ciudad        String?
+  nombre        String?
+  apellidos     String?
+  createdAt     DateTime      @default(now())
+  emailVerified Boolean       @default(false)
+  comentarios   Comentario[]
+  expediciones  Expedicion[]
+  imagen_tabla  ImagenTabla[]
 }
 
 model Comentario {
@@ -36,13 +41,14 @@ model Comentario {
 
 model Expedicion {
   id           Int           @id @default(autoincrement())
-  userId       String        @map(name: "user_id")
   titulo       String
   descripcion  String?
   fecha        DateTime
   precio       Int
   ubicacion1   String
   ubicacion2   String[]
+  usuario      Usuario       @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+  usuario_id   Int
   detalles     Detalle[]
   imagen_tabla ImagenTabla[]
 }
@@ -63,6 +69,8 @@ model ImagenTabla {
   imagen        Imagen     @relation(fields: [imagen_id], references: [id], onDelete: Cascade)
   expedicion_id Int
   imagen_id     Int
+  Usuario       Usuario?   @relation(fields: [usuarioId], references: [id])
+  usuarioId     Int?
 }
 
 model Detalle {
