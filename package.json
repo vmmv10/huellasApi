@@ -13,11 +13,11 @@
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^3.0.1",
-    "prisma": "^5.4.2"
+    "prisma": "^5.5.2"
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
-    "@prisma/client": "^5.4.2",
+    "@prisma/client": "^5.5.2",
     "bcrypt": "^5.1.1",
     "cloudinary": "^1.41.0",
     "cors": "^2.8.5",
