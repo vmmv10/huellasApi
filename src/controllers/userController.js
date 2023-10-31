@@ -74,12 +74,46 @@ export async function login(req, res) {
         expiresIn: 60 * 60 * 4, // seconds
       });
       user.access_token_backend = access_token
-      res.json({
-        error: null,
-        data: user
-      })
+      res.json(
+        user
+      )
     });
   } catch (error) {
+    res.status(400).json({ error })
+  }
+};
+
+export async function authToken(req, res) {
+  const user = req.body
+  console.log(user)
+  const userSearch = await prisma.usuario.findFirst({
+    where: {
+      email: user.email
+    }
+  });
+  console.log(userSearch)
+  try {
+    if (!userSearch) {
+      const savedUser = await prisma.usuario.create({
+        data: {
+          nombre: user.nombre,
+          email: user.email,
+        }
+      })
+      const access_token = jwt.sign(Object.assign({}, savedUser), process.env.TOKEN_SECRET, {
+        expiresIn: 60 * 60 * 4, // seconds
+      });
+      savedUser.access_token_backend = access_token
+      res.json(savedUser)
+    } else {
+      const access_token = jwt.sign(Object.assign({}, userSearch), process.env.TOKEN_SECRET, {
+        expiresIn: 60 * 60 * 4, // seconds
+      });
+      userSearch.access_token_backend = access_token
+      res.json(userSearch)
+    }
+  } catch (error) {
+    console.log(error)
     res.status(400).json({ error })
   }
 };
